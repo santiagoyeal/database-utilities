@@ -35,3 +35,18 @@ GROUP BY
     t.name
 HAVING 
     SUM(p.rows) = 0;
+
+-- Row counts
+SELECT 
+    t.name AS TableName,
+    SUM(p.rows) AS RowCounts
+FROM 
+    sys.tables t
+JOIN 
+    sys.partitions p ON t.object_id = p.object_id
+WHERE 
+    p.index_id IN (0, 1)
+GROUP BY 
+    t.name
+ORDER BY 
+    RowCounts DESC;
