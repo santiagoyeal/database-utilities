@@ -1,4 +1,4 @@
--- Tables without relationships
+-- Retrieve all tables that do not have relationships (no foreign keys).
 SELECT t.name AS table_name
 FROM sys.tables t
 WHERE NOT EXISTS (
@@ -7,7 +7,7 @@ WHERE NOT EXISTS (
     WHERE fk.parent_object_id = t.object_id
 );
 
--- Check contraints that has a specific table
+-- Retrieve all foreign key constraints that reference a specific table ('CAT_RAP').
 SELECT 
     fk.name AS ForeignKeyName,
     OBJECT_NAME(fk.parent_object_id) AS TableName,
@@ -20,8 +20,7 @@ INNER JOIN
 WHERE 
     OBJECT_NAME(fk.referenced_object_id) = 'CAT_RAP';
 
--- Script to find records without data
-
+-- Retrieve all tables that do not contain any records (empty tables).
 SELECT 
     t.name AS TableName,
     SUM(p.rows) AS RowCounts
@@ -36,7 +35,7 @@ GROUP BY
 HAVING 
     SUM(p.rows) = 0;
 
--- Row counts
+-- Retrieve the number of records per table, sorted in descending order.
 SELECT 
     t.name AS TableName,
     SUM(p.rows) AS RowCounts
@@ -50,3 +49,19 @@ GROUP BY
     t.name
 ORDER BY 
     RowCounts DESC;
+
+-- List all foreign keys along with their origin and destination tables, including the involved columns.
+SELECT 
+    fk.name AS ForeignKeyName,
+    OBJECT_NAME(fk.parent_object_id) AS ParentTable,
+    c1.name AS ParentColumn,
+    OBJECT_NAME(fk.referenced_object_id) AS ReferencedTable,
+    c2.name AS ReferencedColumn
+FROM 
+    sys.foreign_keys fk
+JOIN 
+    sys.foreign_key_columns fkc ON fk.object_id = fkc.constraint_object_id
+JOIN 
+    sys.columns c1 ON fkc.parent_object_id = c1.object_id AND fkc.parent_column_id = c1.column_id
+JOIN 
+    sys.columns c2 ON fkc.referenced_object_id = c2.object_id AND fkc.referenced_column_id = c2.column_id;
