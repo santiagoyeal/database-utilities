@@ -65,3 +65,13 @@ JOIN
     sys.columns c1 ON fkc.parent_object_id = c1.object_id AND fkc.parent_column_id = c1.column_id
 JOIN 
     sys.columns c2 ON fkc.referenced_object_id = c2.object_id AND fkc.referenced_column_id = c2.column_id;
+
+-- Retrieve tables that do not have a primary key defined
+SELECT 
+    t.name AS TableName
+FROM 
+    sys.tables t
+LEFT JOIN 
+    sys.indexes i ON t.object_id = i.object_id AND i.is_primary_key = 1
+WHERE 
+    i.object_id IS NULL;
