@@ -14,16 +14,16 @@
 -- =============================================
 
 -- 1️⃣ Check Database Status
--- This query checks if the database "CENTENARIO" is online.
+-- This query checks if the database "DB_NAME" is online.
 SELECT name, state_desc 
 FROM sys.databases 
-WHERE name = 'CENTENARIO';
+WHERE name = 'DB_NAME';
 
 -- If the state is "RESTORING", "OFFLINE", or "RECOVERY_PENDING", recovery is required.
 
 -- 2️⃣ Recover Database from RESTORING State
 -- If the database is in RESTORING mode, execute this command.
-RESTORE DATABASE CENTENARIO WITH RECOVERY;
+RESTORE DATABASE DB_NAME WITH RECOVERY;
 
 -- 3️⃣ Check Available Database Space
 -- Shows database size and available space.
@@ -37,14 +37,14 @@ WHERE blocking_session_id <> 0;
 
 -- 5️⃣ Backup the Database
 -- Creates a full backup of the database.
-BACKUP DATABASE CENTENARIO  
-TO DISK = 'C:\Backups\CENTENARIO.bak'  
+BACKUP DATABASE DB_NAME  
+TO DISK = 'C:\Backups\DB_NAME.bak'  
 WITH FORMAT, INIT, COMPRESSION, STATS = 10;
 
 -- 6️⃣ Restore Database from a Backup
 -- Restores the database from the latest backup.
-RESTORE DATABASE CENTENARIO  
-FROM DISK = 'C:\Backups\CENTENARIO.bak'  
+RESTORE DATABASE DB_NAME  
+FROM DISK = 'C:\Backups\DB_NAME.bak'  
 WITH REPLACE, RECOVERY, STATS = 10;
 
 -- 7️⃣ List Users and Roles
